@@ -1,0 +1,28 @@
+{
+  "AutoLayout": {
+    "GlobalScreenSettings":{
+      "ScreenChange": true,
+      "DisplayName": "",
+      "CaptureLayoutDelay": 2000,
+      "ScreenShot": false,
+      "NumberOfWebViews": 3,
+      "CaptureUserEvents": true,
+      "CaptureScreenVisits": true,
+      "CaptureLayoutOn": 2,
+      "CaptureScreenshotOn": 0
+    },
+    "MainActivity": {
+      "ScreenChange": true,
+      "DisplayName": "MainActivity",
+      "NumberOfWebViews": 2
+    }
+  },
+  "AppendMapIds": {
+    "com.any.package:id/givenIdOnXmlLayout1": {
+      "mid": "giveAdditionalId1"
+    },
+    "com.any.package:id/givenIdOnXmlLayout2": {
+      "mid": "giveAdditionalId2"
+    }
+  }
+}

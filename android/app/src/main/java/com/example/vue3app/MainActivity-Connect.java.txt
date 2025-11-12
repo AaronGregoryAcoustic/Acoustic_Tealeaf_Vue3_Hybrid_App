@@ -1,0 +1,50 @@
+package com.example.vue3app;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
+import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.WebViewListener;
+import com.acoustic.connect.android.Connect;
+import com.acoustic.connect.android.javascript.JavaScriptInterface;
+
+public class MainActivity extends BridgeActivity {
+  private WebView webView;
+  private Context context;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // Initialize Connect SDK
+    new Connect(getApplication());
+    Connect.enable();
+
+    // Get Webview via Capacitor bridge
+    context = bridge.getContext();
+    webView = bridge.getWebView();
+
+    webView.clearCache(true);
+    WebSettings webSettings = webView.getSettings();
+    webSettings.setJavaScriptEnabled(true);
+
+    // Add Connect JavaScriptInterface
+    webView.addJavascriptInterface(new JavaScriptInterface(getApplication(), webView, Connect.getPropertyName((View)webView).getId()), "connectBridge");
+
+    // Webview client pageloaded callback
+    bridge.addWebViewListener(new WebViewListener() {
+      @Override
+      public void onPageLoaded(WebView webView) {
+        super.onPageLoaded(webView);
+
+        webView.loadUrl("javascript:CONNECT.registerBridgeCallbacks([ "
+          + "{enabled: true, cbType: 'screenCapture', cbFunction: function (){connectBridge.screenCapture();}},"
+          + "{enabled: true, cbType: 'messageRedirect', cbFunction: function (data){connectBridge.addMessage(data);}}]);");
+      }
+    });
+  }
+}

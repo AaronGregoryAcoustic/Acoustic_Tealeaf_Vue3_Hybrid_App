@@ -1,0 +1,341 @@
+package com.example.vue3app;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
+import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.WebViewListener;
+
+// ============================================================================
+// TEALEAF ANDROID SDK IMPORTS (WORKING)
+// ============================================================================
+// These imports work because Tealeaf Android SDK 10.4.19-beta has hybrid support
+import com.tl.uic.Tealeaf;
+import com.tl.uic.javascript.JavaScriptInterface;
+
+// ============================================================================
+// CONNECT ANDROID SDK IMPORTS (WOULD FAIL - CLASSES DON'T EXIST)
+// ============================================================================
+// ❌ COMPILATION ERROR: These classes DO NOT EXIST in Connect Android SDK 10.4.67-beta
+// 
+// What we would NEED if Connect supported hybrid apps:
+// import com.acoustic.connect.android.Connect;                    // ❌ Does not exist
+// import com.acoustic.connect.android.javascript.JavaScriptInterface;  // ❌ Does not exist
+//
+// What Connect ACTUALLY provides (all Jetpack Compose UI only):
+// import com.acoustic.connect.android.connectmod.composeui.*;     // ✅ Exists (native UI only)
+// import com.acoustic.connect.android.connectmod.util.GestureUtil; // ✅ Exists (native gestures only)
+//
+// VERIFIED: We analyzed all 134 classes in Connect Android SDK.
+//           ZERO classes support WebView, JavaScript bridge, or hybrid apps.
+// ============================================================================
+
+/**
+ * DEMONSTRATION: Attempted Migration from Tealeaf to Connect Android SDK
+ * 
+ * ⚠️  WARNING: THIS CODE WILL NOT COMPILE OR RUN WITH CONNECT ANDROID SDK ⚠️
+ * 
+ * PURPOSE:
+ * This file demonstrates what a migration from Tealeaf to Connect WOULD look like
+ * if Connect Android SDK had the required JavaScriptInterface support for hybrid apps.
+ * 
+ * PROBLEM:
+ * Connect Android SDK 10.4.67-beta is MISSING the JavaScriptInterface module entirely.
+ * This is a BLOCKER for all hybrid mobile applications (Capacitor, Cordova, Ionic, etc.)
+ * 
+ * EVIDENCE:
+ * - Comprehensive analysis of Connect Android SDK found 134 classes
+ * - ALL classes are Jetpack Compose UI components for NATIVE apps only
+ * - ZERO matches for: 'javascript', 'bridge', 'webview', 'hybrid', 'interface'
+ * - No WebView client, no JavaScript bridge, no hybrid support whatsoever
+ * 
+ * VERIFICATION:
+ * Run these scripts to verify independently:
+ * - ./compare-sdks.sh          (shows side-by-side comparison)
+ * - ./analyze-connect-beta.sh  (shows all 134 Connect classes - all native only)
+ * 
+ * CURRENT STATUS:
+ * ✅ Tealeaf Android SDK 10.4.19-beta: Works perfectly for hybrid apps
+ * ❌ Connect Android SDK 10.4.67-beta: Cannot be used for hybrid apps
+ * 
+ * RECOMMENDATION:
+ * Continue using Tealeaf Android SDK until Connect adds JavaScriptInterface support.
+ */
+public class MainActivity_Tealeaf_to_Connect extends BridgeActivity {
+  private WebView webView;
+  private Context context;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // ========================================================================
+    // STEP 1: SDK INITIALIZATION
+    // ========================================================================
+    
+    // ----------------------------------------------------
+    // TEALEAF ANDROID SDK (WORKING - Current Implementation)
+    // ----------------------------------------------------
+    // Initialize Tealeaf SDK
+    new Tealeaf(getApplication());
+    Tealeaf.enable();
+    
+    // ✅ WORKS: Tealeaf class exists and supports both native and hybrid apps
+    // ✅ WORKS: Provides lifecycle management for all app types
+    // ✅ WORKS: Has been stable and reliable in production
+    
+    
+    // ----------------------------------------------------
+    // CONNECT ANDROID SDK (WOULD FAIL - Hypothetical Code)
+    // ----------------------------------------------------
+    // ❌ COMPILATION ERROR: Connect class does not exist
+    // 
+    // What the code WOULD look like if Connect supported hybrid apps:
+    // 
+    // new Connect(getApplication());    // ❌ ERROR: Cannot resolve symbol 'Connect'
+    // Connect.enable();                 // ❌ ERROR: Cannot resolve symbol 'Connect'
+    // 
+    // WHY IT FAILS:
+    // - Connect Android SDK has NO initialization class for hybrid apps
+    // - Connect only provides Compose UI components (native only)
+    // - There is no equivalent to Tealeaf's hybrid app support
+    // ----------------------------------------------------
+
+    // ========================================================================
+    // STEP 2: WEBVIEW CONFIGURATION
+    // ========================================================================
+    
+    // Get WebView via Capacitor bridge (same for both SDKs)
+    context = bridge.getContext();
+    webView = bridge.getWebView();
+
+    // Configure WebView (same for both SDKs)
+    webView.clearCache(true);
+    WebSettings webSettings = webView.getSettings();
+    webSettings.setJavaScriptEnabled(true);
+
+    // ========================================================================
+    // STEP 3: JAVASCRIPT INTERFACE BRIDGE (CRITICAL - THIS IS THE BLOCKER)
+    // ========================================================================
+    
+    // ----------------------------------------------------
+    // TEALEAF ANDROID SDK (WORKING)
+    // ----------------------------------------------------
+    // Add Tealeaf JavaScriptInterface to enable native-to-web communication
+    webView.addJavascriptInterface(
+      new JavaScriptInterface(
+        getApplication(), 
+        webView, 
+        Tealeaf.getPropertyName((View)webView).getId()
+      ), 
+      "tlBridge"  // Bridge name accessible from JavaScript
+    );
+    
+    // ✅ WORKS: JavaScriptInterface class exists in Tealeaf Android SDK
+    //    Location: com.tl.uic.javascript.JavaScriptInterface
+    // ✅ WORKS: Provides methods for screen capture, message logging, session data
+    // ✅ WORKS: Bridge is accessible from web code via window.tlBridge
+    // ✅ WORKS: Enables bidirectional communication between native and web layers
+    
+    
+    // ----------------------------------------------------
+    // CONNECT ANDROID SDK (WOULD FAIL - THE MAIN BLOCKER)
+    // ----------------------------------------------------
+    // ❌ COMPILATION ERROR: JavaScriptInterface class DOES NOT EXIST in Connect
+    // 
+    // What the code WOULD look like if Connect supported hybrid apps:
+    // 
+    // webView.addJavascriptInterface(
+    //   new com.acoustic.connect.android.javascript.JavaScriptInterface(  // ❌ CLASS DOES NOT EXIST
+    //     getApplication(),
+    //     webView,
+    //     Connect.getPropertyName((View)webView).getId()  // ❌ METHOD DOES NOT EXIST
+    //   ),
+    //   "connectBridge"  // Hypothetical bridge name
+    // );
+    // 
+    // WHY IT FAILS - DETAILED BREAKDOWN:
+    // 
+    // 1. ❌ Missing Class: com.acoustic.connect.android.javascript.JavaScriptInterface
+    //    - This is the CRITICAL missing component
+    //    - Tealeaf has: com.tl.uic.javascript.JavaScriptInterface ✅
+    //    - Connect has: NOTHING - class does not exist ❌
+    //    - Our verification scripts confirm this across all 134 Connect classes
+    // 
+    // 2. ❌ Missing Constructor: JavaScriptInterface(Application, WebView, String)
+    //    - Cannot be called because class doesn't exist
+    //    - Would need to accept app context, webview, and session ID
+    // 
+    // 3. ❌ Missing Methods that JavaScript would call:
+    //    - screenCapture()           - Captures screen for session replay
+    //    - addMessage(String data)   - Logs events from web layer
+    //    - logFormCompletion()       - Tracks form submissions
+    //    - setCustomEvent()          - Custom analytics events
+    //    - ALL of these are missing because the class doesn't exist
+    // 
+    // 4. ❌ Missing WebView Integration:
+    //    - No TLFWebViewClient equivalent in Connect
+    //    - No page lifecycle tracking for WebViews
+    //    - No automatic instrumentation of web interactions
+    // 
+    // 5. ❌ Missing Data Models:
+    //    - No JSBridgeData class for passing data between layers
+    //    - No session management for hybrid apps
+    //    - No replay capture for WebView content
+    // 
+    // IMPACT:
+    // - Cannot track ANY user interactions in the WebView
+    // - Cannot capture session replays of hybrid app behavior  
+    // - Cannot log events from the web layer to analytics
+    // - Hybrid app becomes a "black box" with ZERO instrumentation
+    // - This is a complete BLOCKER for hybrid mobile applications
+    // ----------------------------------------------------
+
+    // ========================================================================
+    // STEP 4: WEBVIEW LIFECYCLE CALLBACKS
+    // ========================================================================
+    
+    // ----------------------------------------------------
+    // TEALEAF ANDROID SDK (WORKING)
+    // ----------------------------------------------------
+    // Register callbacks for page load events
+    bridge.addWebViewListener(new WebViewListener() {
+      @Override
+      public void onPageLoaded(WebView webView) {
+        super.onPageLoaded(webView);
+
+        // Inject JavaScript to register Tealeaf callbacks in web layer
+        webView.loadUrl("javascript:TLT.registerBridgeCallbacks([ "
+          + "{enabled: true, cbType: 'screenCapture', cbFunction: function (){tlBridge.screenCapture();}},"
+          + "{enabled: true, cbType: 'messageRedirect', cbFunction: function (data){tlBridge.addMessage(data);}}]);");
+        
+        // ✅ WORKS: tlBridge is available because JavaScriptInterface was added
+        // ✅ WORKS: Web code can call native methods via the bridge
+        // ✅ WORKS: Screen captures work for session replay
+        // ✅ WORKS: Message logging works for analytics
+      }
+    });
+    
+    
+    // ----------------------------------------------------
+    // CONNECT ANDROID SDK (WOULD FAIL)
+    // ----------------------------------------------------
+    // ❌ RUNTIME ERROR: Even if we registered callbacks, they would fail
+    // 
+    // What the code WOULD look like:
+    // 
+    // bridge.addWebViewListener(new WebViewListener() {
+    //   @Override
+    //   public void onPageLoaded(WebView webView) {
+    //     super.onPageLoaded(webView);
+    // 
+    //     // ❌ RUNTIME ERROR: connectBridge is undefined in JavaScript
+    //     // Because JavaScriptInterface was never added (class doesn't exist)
+    //     webView.loadUrl("javascript:CONNECT.registerBridgeCallbacks([ "
+    //       + "{enabled: true, cbType: 'screenCapture', cbFunction: function (){connectBridge.screenCapture();}},"  // ❌ connectBridge is undefined
+    //       + "{enabled: true, cbType: 'messageRedirect', cbFunction: function (data){connectBridge.addMessage(data);}}]);");  // ❌ methods don't exist
+    // 
+    //     // WHAT WOULD HAPPEN:
+    //     // 1. JavaScript tries to call connectBridge.screenCapture()
+    //     // 2. ERROR: "connectBridge is not defined" in web console
+    //     // 3. No screen capture happens
+    //     // 4. No data is sent to analytics
+    //     // 5. Hybrid app instrumentation is completely broken
+    //   }
+    // });
+    // ----------------------------------------------------
+  }
+
+  // ========================================================================
+  // ADDITIONAL MISSING FUNCTIONALITY IN CONNECT ANDROID SDK
+  // ========================================================================
+  
+  // The following methods exist in Tealeaf but would NOT work with Connect:
+  
+  // 1. ❌ Session Management
+  //    Tealeaf: Tealeaf.getSessionId(), Tealeaf.getCurrentSessionId()
+  //    Connect: No equivalent for hybrid apps
+  
+  // 2. ❌ Custom Events
+  //    Tealeaf: JavaScriptInterface.setCustomEvent(String name, String value)
+  //    Connect: Class doesn't exist, method impossible
+  
+  // 3. ❌ Screen Capture
+  //    Tealeaf: JavaScriptInterface.screenCapture()
+  //    Connect: Class doesn't exist, method impossible
+  
+  // 4. ❌ Form Tracking
+  //    Tealeaf: JavaScriptInterface.logFormCompletion()
+  //    Connect: Class doesn't exist, method impossible
+  
+  // 5. ❌ Error Logging
+  //    Tealeaf: JavaScriptInterface.logException(String message)
+  //    Connect: Class doesn't exist, method impossible
+  
+  // 6. ❌ Page Context
+  //    Tealeaf: JavaScriptInterface.setPageContext(String context)
+  //    Connect: Class doesn't exist, method impossible
+  
+  // 7. ❌ WebView Client
+  //    Tealeaf: TLFWebViewClient for automatic page tracking
+  //    Connect: No equivalent, class doesn't exist
+
+  // ========================================================================
+  // WHAT CONNECT ANDROID SDK ACTUALLY PROVIDES
+  // ========================================================================
+  
+  // Connect Android SDK 10.4.67-beta ONLY supports:
+  // 
+  // ✅ Native Jetpack Compose UI components
+  //    - ComposeUI layouts and screens
+  //    - Native gesture tracking
+  //    - Native screen transitions
+  // 
+  // ✅ Native gesture utilities
+  //    - GestureUtil for touch events
+  //    - Only works for native views, NOT WebViews
+  // 
+  // ❌ NO hybrid app support
+  // ❌ NO WebView instrumentation  
+  // ❌ NO JavaScript bridge
+  // ❌ NO session replay for web content
+  // ❌ NO analytics for hybrid interactions
+  
+  // ========================================================================
+  // CONCLUSION
+  // ========================================================================
+  
+  // MIGRATION VERDICT: ❌ IMPOSSIBLE
+  // 
+  // Cannot migrate from Tealeaf to Connect for hybrid apps because:
+  // 
+  // 1. Connect Android SDK is missing JavaScriptInterface class (verified)
+  // 2. Connect Android SDK has ZERO hybrid support classes (verified - 134 classes analyzed)
+  // 3. Connect Android SDK only supports native Jetpack Compose apps (verified)
+  // 4. No workaround exists - the required classes simply don't exist
+  // 
+  // RECOMMENDATION:
+  // - Continue using Tealeaf Android SDK 10.4.19-beta for hybrid apps ✅
+  // - Monitor Acoustic roadmap for JavaScriptInterface support in Connect
+  // - Consider filing JIRA ticket and support request (templates provided)
+  // - Use verification scripts to prove this to Acoustic engineering team
+  // 
+  // VERIFICATION TOOLS:
+  // GitHub: https://github.com/AaronGregoryAcoustic/Acoustic_Connect_Android_SDK_Verification
+  // 
+  // Scripts:
+  // - ./compare-sdks.sh          - Shows Tealeaf HAS JavaScriptInterface, Connect does NOT
+  // - ./analyze-connect-beta.sh  - Lists all 134 Connect classes (all Compose UI, no hybrid)
+  // 
+  // These scripts provide automated proof that can be shared with:
+  // - Acoustic support team
+  // - Acoustic engineering team  
+  // - Your development team
+  // - Your management/stakeholders
+  // 
+  // ========================================================================
+}

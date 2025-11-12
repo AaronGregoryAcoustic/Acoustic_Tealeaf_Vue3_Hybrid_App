@@ -1,0 +1,47 @@
+PODS:
+  - AcousticConnectDebug (1.0.68):
+    - AcousticConnectDebug/Core (= 1.0.68)
+  - AcousticConnectDebug/Core (1.0.68):
+    - TealeafDebug
+  - Capacitor (5.0.5):
+    - CapacitorCordova
+  - CapacitorBrowser (5.0.3):
+    - Capacitor
+  - CapacitorCordova (5.0.5)
+  - EOCoreDebug (2.3.323)
+  - TealeafDebug (10.6.326):
+    - TealeafDebug/Core (= 10.6.326)
+  - TealeafDebug/Core (10.6.326):
+    - EOCoreDebug
+
+DEPENDENCIES:
+  - AcousticConnectDebug
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+
+SPEC REPOS:
+  trunk:
+    - AcousticConnectDebug
+    - EOCoreDebug
+    - TealeafDebug
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorBrowser:
+    :path: "../../node_modules/@capacitor/browser"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+
+SPEC CHECKSUMS:
+  AcousticConnectDebug: aa49d7d89327a1ced2444526e6c8a29b0c8f542d
+  Capacitor: b1248915663add1bd6567e2b67c1c1fa3abcf5e8
+  CapacitorBrowser: 2688852d02f1e89560a31b70521c71a5e7348860
+  CapacitorCordova: f8c06b897c74ee8f7701fe10e6443b40822bc83a
+  EOCoreDebug: d0c4d85e640ca765817b2927efe7f02823791074
+  TealeafDebug: 6eb9f82044655e1eb6fb781ccb84170e078ac167
+
+PODFILE CHECKSUM: 2cf35b080a58d8bf02868b8f3655da470e6ac68d
+
+COCOAPODS: 1.16.2
