@@ -38,15 +38,68 @@ This project has been tested with the following versions:
 > **Note**: You can check your environment by running `npx cap doctor` after installing dependencies.
 
 ## Build Setup
+
+### 1. Set Up Android SDK (Required for Android builds)
+
+**IMPORTANT: Complete this step BEFORE installing dependencies or building the project.**
+
+Ensure your Android SDK is properly configured by choosing one of these options:
+
+**Option A: Set ANDROID_HOME environment variable (Recommended)**
+
+Add to your `~/.zshrc` or `~/.bash_profile`:
+```bash
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+```
+
+Then reload your shell:
+```bash
+source ~/.zshrc  # or source ~/.bash_profile
+```
+
+Verify it's set correctly:
+```bash
+echo $ANDROID_HOME  # Should output: /Users/YOUR_USERNAME/Library/Android/sdk
+```
+
+**Option B: Create local.properties file**
+
+If `ANDROID_HOME` is not set, create `android/local.properties`:
+```properties
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+```
+Replace `YOUR_USERNAME` with your actual username.
+
+> **Note**: You only need one of these options. If `ANDROID_HOME` is set, `local.properties` is not required.
+
+### 2. Set Up iOS (Required for iOS builds)
+
+**macOS only** - Ensure you have:
+- Xcode 16.0.1 or later installed
+- Xcode Command Line Tools: `xcode-select --install`
+- CocoaPods: `sudo gem install cocoapods`
+
+### 3. Install Dependencies
 ``` bash
-# install dependencies
+# install JavaScript dependencies
 yarn
 
+# install iOS dependencies (macOS only)
+cd ios/App && pod install && cd ../..
+```
+
+### 4. Build and Run
+
+``` bash
 # serve with hot reload at localhost:8080
 yarn dev
 
 # build for production with minification
 yarn build
+
+# sync web assets to native projects
+npx cap sync
 
 # to run the project on a device or simulator
 npx cap run ios
