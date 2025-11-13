@@ -19,6 +19,14 @@ This project has been tested with the following versions:
 ### Android Development
 - **Android Studio**: Latest stable version recommended
 - **Gradle**: Managed by project wrapper
+- **Android SDK**: API Level 36 (compile and target) - Android 16
+- **Minimum SDK**: API Level 22 (Android 5.1)
+- **Required SDK Components**:
+  - Android SDK Platform 36
+  - Android SDK Build-Tools 36.0.0 or higher
+  - Android Emulator (optional, for testing)
+
+> **Important**: Make sure to install Android SDK Platform 36 via Android Studio's SDK Manager (Tools → SDK Manager → SDK Platforms). This project targets API Level 36 (Android 16) for maximum compatibility.
 
 ### Framework Versions
 - **Vue**: ^3.3.4
@@ -95,6 +103,51 @@ This app is currently configured to send data to the Tealeaf On-Premise (TLOP) s
 1. Navigate to the TLOP Portal: [https://tealeaf-op-portal.sandbox.acoustic-demo.com/Portal/Default.aspx](https://tealeaf-op-portal.sandbox.acoustic-demo.com/Portal/Default.aspx)
 2. Log in with your credentials
 3. Your sessions will be available for replay and analysis in the portal
+
+## Troubleshooting
+
+### Android Build Issues
+
+**Error: "Failed to find target with hash string 'android-36'" or API Level errors**
+
+This means you don't have the required Android SDK Platform installed. To fix:
+
+1. Open Android Studio
+2. Go to **Tools → SDK Manager**
+3. In the **SDK Platforms** tab, check and install:
+   - Android 16.0 (API Level 36) - **Required**
+4. In the **SDK Tools** tab, ensure you have:
+   - Android SDK Build-Tools 36.0.0 or higher
+   - Android Emulator (for testing)
+5. Click **Apply** and let it install
+6. Rebuild the project
+
+**Gradle sync issues**
+
+If you encounter Gradle sync problems:
+```bash
+cd android
+./gradlew clean
+./gradlew build
+```
+
+### iOS Build Issues
+
+**CocoaPods issues**
+
+If you encounter pod-related errors:
+```bash
+cd ios/App
+pod deintegrate
+pod install
+```
+
+**Xcode build errors**
+
+Make sure you have the latest Xcode Command Line Tools:
+```bash
+xcode-select --install
+```
 
 ## Screen Shots
 <p align="center">
