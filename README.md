@@ -106,6 +106,20 @@ npx cap run ios
 npx cap run android
 ```
 
+### First-Time Android Build Fix
+
+If you encounter build errors on your first Android build (especially Gradle cache corruption errors), run this from the VS Code terminal:
+
+```bash
+cd android
+rm -rf .gradle build app/build
+./gradlew assembleDebug --no-daemon --no-build-cache
+cd ..
+npx cap run android
+```
+
+This clears local build caches and forces Gradle to download dependencies properly. After the first successful build, subsequent builds will work normally with just `npx cap run android`.
+
 ## Acoustic Tealeaf Configuration
 
 This app integrates with Acoustic Tealeaf for analytics and session replay. You'll need to configure the post message URL and app key for both platforms.
@@ -160,6 +174,26 @@ This app is currently configured to send data to the Tealeaf On-Premise (TLOP) s
 ## Troubleshooting
 
 ### Android Build Issues
+
+**First Build Failure: Gradle Cache Corruption**
+
+On a fresh clone, the first Android build may fail with errors like:
+- `ERR_UNSUPPORTED_API_LEVEL: Unsupported API level: 36.1`
+- `Could not read workspace metadata from .gradle/caches/...`
+- Missing AAR metadata files
+
+**Solution**: Clear build caches and rebuild:
+```bash
+cd android
+rm -rf .gradle build app/build
+./gradlew assembleDebug --no-daemon --no-build-cache
+cd ..
+npx cap run android
+```
+
+This forces Gradle to download all dependencies fresh without using corrupted cache. After this first successful build, normal builds will work fine.
+
+**Alternative**: Open the project in Android Studio, which will automatically trigger a proper Gradle sync that fixes the cache.
 
 **Error: "Failed to find target with hash string 'android-36'" or API Level errors**
 
