@@ -332,8 +332,8 @@ TLT.addModule("gestures",(function(e){const t={"input:radio":"radioButton","inpu
           appCookieWhitelist: [
             { regex: '.*' }
           ],
-          //tlAppKey: 'fa47722a7fef4bcd8677fd8d6d113a0d', // US-2 > Tealeaf CSP > SDK Default - Android
-		  tlAppKey: 'a28c83da74d1420d947db72a3a81e6f5', // US-2 > Tealeaf CSP > BCBSNC-DEMO
+          tlAppKey: 'fa47722a7fef4bcd8677fd8d6d113a0d', // US-2 > Tealeaf CSP > SDK Default - Android
+		      //tlAppKey: 'a28c83da74d1420d947db72a3a81e6f5', // US-2 > Tealeaf CSP > BCBSNC-DEMO
 		  
           disableACOCONNECTDID: false
         }
@@ -342,3 +342,4 @@ TLT.addModule("gestures",(function(e){const t={"input:radio":"radioButton","inpu
 
   TLT.init(config)
 }())
+
